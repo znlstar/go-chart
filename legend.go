@@ -254,8 +254,8 @@ func LegendLeft(c *Chart, userDefaults ...Style) Renderable {
 		}
 
 		legend := Box{
-			Top:  5,
-			Left: 5,
+			Top:  5 + cb.Top,
+			Left: 5 + cb.Left,
 			// bottom and right will be sized by the legend content + relevant padding.
 		}
 
