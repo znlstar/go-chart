@@ -188,7 +188,7 @@ func (this *MChart) Render(rp RendererProvider, w io.Writer) (err error) {
 			c.drawSeries(r, canvasBox, xr, yr, yra, series, index)
 		}
 
-		c.drawTitle(r)
+		c.drawMTitle(r, this.GetBoxes(i))
 		for _, a := range c.Elements {
 			canvasBox = this.GetBoxes(i)
 			a(r, canvasBox, c.styleDefaultsElements())
@@ -271,4 +271,23 @@ func (c Chart) getMAnnotationAdjustedCanvasBox(r Renderer, canvasBox Box, xr, yr
 	b.Right += baseBox.Right
 	b.Bottom += baseBox.Bottom
 	return canvasBox.OuterConstrain(b, annotationSeriesBox)
+}
+
+func (c Chart) drawMTitle(r Renderer, canvasBox Box) {
+	if len(c.Title) > 0 && c.TitleStyle.Show {
+		r.SetFont(c.TitleStyle.GetFont(c.GetFont()))
+		r.SetFontColor(c.TitleStyle.GetFontColor(c.GetColorPalette().TextColor()))
+		titleFontSize := c.TitleStyle.GetFontSize(DefaultTitleFontSize)
+		r.SetFontSize(titleFontSize)
+
+		textBox := r.MeasureText(c.Title)
+
+		textWidth := textBox.Width()
+		textHeight := textBox.Height()
+
+		titleX := canvasBox.Left + (c.GetWidth() >> 1) - (textWidth >> 1)
+		titleY := canvasBox.Top + c.TitleStyle.Padding.GetTop(DefaultTitleTop) + textHeight
+
+		r.Text(c.Title, titleX, titleY)
+	}
 }
